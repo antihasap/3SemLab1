@@ -6,7 +6,7 @@
 
 using namespace std;
 bool nt(char c) {
-    return isupper(c) && isalpha(c);
+    return isupper((unsigned char)c) && isalpha((unsigned char)c);
 }
 bool t(char c) {
     return !nt(c);
@@ -27,8 +27,8 @@ int main() {
 
         size_t pos;
         while ((pos = line.find("⊥")) != string::npos) {
-            line.replace(pos, 2, "#"); // тут меняем символ '⊥'
-        }                              // на однобайтовый '#'
+            line.replace(pos, 2, "#"); // тут меняем символ "⊥"
+        }                              // на однобайтовый "#"
         size_t p = line.find("->");
         if (p == string::npos) continue;
 
@@ -38,19 +38,24 @@ int main() {
         l.erase(remove(l.begin(), l.end(), ' '), l.end());
         r.erase(remove(r.begin(), r.end(), ' '), r.end());
 
-        if (l.size() != 1 || !nt(l[0])) {
-            if (type > 2) type = 2;
-        }
-
-        if (r.size() == 2) {
-            char a = r[0];
-            char b = r[1];
-            if (!((t(a) && nt(b)) || (nt(a) && t(b)))) {
-                if (type > 2) type = 2;
+        if (type == 3) {
+            bool ok = true;
+            if (l.size() != 1 || !nt(l[0])) ok = false;
+            if (r.size() > 2) ok = false;
+            else if (r.size() == 2) {
+                char a = r[0], b = r[1];
+                if (!((t(a) && nt(b)) || (nt(a) && t(b)))) ok = false;
             }
+            else if (r.size() == 1) {
+                if (nt(r[0])) ok = false;
+            }
+            if (!ok) type = 2;
         }
-        else if (r.size() < l.size()) {
-            if (type > 1) type = 1;
+        if (type == 2) {
+            if (l.size() != 1 || !nt(l[0])) type = 1;
+        }
+        if (type == 1) {
+            if (r.size() < l.size()) type = 0;
         }
     }
     f.close();
