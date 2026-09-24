@@ -27,8 +27,8 @@ int main() {
 
         size_t pos;
         while ((pos = line.find("⊥")) != string::npos) {
-            line.replace(pos, 2, "#"); // тут меняем символ "⊥"
-        }                              // на однобайтовый "#"
+            line.replace(pos, 2, "#");
+        }
         size_t p = line.find("->");
         if (p == string::npos) continue;
 
